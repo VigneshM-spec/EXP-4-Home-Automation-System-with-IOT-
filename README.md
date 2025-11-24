@@ -14,6 +14,7 @@ Arduino software
 Jumper Wires
 
 # Circuit Diagram:
+<img width="1286" height="661" alt="image" src="https://github.com/user-attachments/assets/30c61393-aaf4-4702-9086-3816a6d0a041" />
 
 
 # Theory: 
@@ -26,7 +27,53 @@ When we apply an active high signal to the signal pin of the relay module from a
 
 
 # Program:
+if (reading != lastButtonState[i]) {
+  lastDebounceTime[i] = millis(); // Reset debounce timer
+}
 
+if ((millis() - lastDebounceTime[i]) > debounceDelay) {
+  if (reading != currentButtonState[i]) {
+    currentButtonState[i] = reading;
+
+    if (currentButtonState[i] == LOW) {
+      switch (i) {
+        case 0: // Clap Button
+          lightState = !lightState;
+          fanState = !fanState;
+          digitalWrite(LED_PIN, lightState ? HIGH : LOW);
+          digitalWrite(RELAY_PIN, fanState ? LOW : HIGH);
+          Serial.print(buttonNames[i]);
+          Serial.print(" Pressed. Light: ");
+          Serial.print(lightState);
+          Serial.print(", Fan: ");
+          Serial.println(fanState);
+          break;
+        case 1: // Voice Light On Button
+          lightState = true;
+          digitalWrite(LED_PIN, HIGH);
+          Serial.println(buttonNames[i]);
+          break;
+        case 2: // Voice Light Off Button
+          lightState = false;
+          digitalWrite(LED_PIN, LOW);
+          Serial.println(buttonNames[i]);
+          break;
+        case 3: // Voice Fan On Button
+          fanState = true;
+          digitalWrite(RELAY_PIN, LOW);
+          Serial.println(buttonNames[i]);
+          break;
+        case 4: // Voice Fan Off Button
+          fanState = false;
+          digitalWrite(RELAY_PIN, HIGH);
+          Serial.println(buttonNames[i]);
+          break;
+      }
+    }
+  }
+}
+
+lastButtonState[i] = reading;
 
 
 # Procedure:
@@ -47,6 +94,7 @@ When we apply an active high signal to the signal pin of the relay module from a
 
 
 # Output:
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/bc6e5262-f3c3-4278-9809-85f930728278" />
 
 # Result:
 
